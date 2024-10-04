@@ -262,6 +262,24 @@ require('lazy').setup({
         topdelete = { text = '‾' },
         changedelete = { text = '~' },
       },
+      numhl = false,
+      linehl = false,
+      watch_gitdir = {
+        interval = 1000,
+      },
+      current_line_blame = true, -- Habilitar git blame en la línea actual
+      current_line_blame_opts = {
+        virt_text = true,
+        virt_text_pos = 'eol', -- Opciones: 'eol', 'overlay', 'right_align'
+        delay = 1000,
+      },
+      current_line_blame_formatter_opts = {
+        relative_time = false,
+      },
+      sign_priority = 6,
+      update_debounce = 100,
+      status_formatter = nil, -- Usa la configuración por defecto
+      max_file_length = 40000, -- Deshabilitar para archivos largos
     },
   },
 
@@ -283,23 +301,34 @@ require('lazy').setup({
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
+    opts = {
+      { '', group = '[W]orkspace' },
+      { '', group = '[T]oggle' },
+      { '', group = '[C]ode' },
+      { '', group = 'Git [H]unk' },
+      { '', group = '[S]earch' },
+      { '', group = '[R]ename' },
+      { '', group = '[D]ocument' },
+      { '', desc = '', hidden = true, mode = { 'n', 'n', 'n', 'n', 'n', 'n', 'n' } },
+      { '<leader>h', desc = 'Git [H]unk', mode = 'v' },
+    },
     config = function() -- This is the function that runs, AFTER loading
       require('which-key').setup()
 
       -- Document existing key chains
-      require('which-key').register {
-        ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-        ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
-        ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-        ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-        ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
-        ['<leader>t'] = { name = '[T]oggle', _ = 'which_key_ignore' },
-        ['<leader>h'] = { name = 'Git [H]unk', _ = 'which_key_ignore' },
-      }
+      -- require('which-key').register {
+      -- ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
+      -- ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
+      -- ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
+      -- ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
+      -- ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
+      -- ['<leader>t'] = { name = '[T]oggle', _ = 'which_key_ignore' },
+      -- ['<leader>h'] = { name = 'Git [H]unk', _ = 'which_key_ignore' },
+      -- }
       -- visual mode
-      require('which-key').register({
-        ['<leader>h'] = { 'Git [H]unk' },
-      }, { mode = 'v' })
+      -- require('which-key').register({
+      --   ['<leader>h'] = { 'Git [H]unk' },
+      -- }, { mode = 'v' })
     end,
   },
 
@@ -618,7 +647,7 @@ require('lazy').setup({
         flake8 = {},
         pylint = {},
         pyright = {},
-        -- rust_analyzer = {},
+        rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -1027,7 +1056,7 @@ require('lazy').setup({
         -- see `:h neo-tree-custom-commands-global`
         commands = {},
         window = {
-          position = 'left',
+          position = 'right',
           width = 40,
           mapping_options = {
             noremap = true,
@@ -1212,38 +1241,38 @@ require('lazy').setup({
       vim.cmd [[nnoremap \ :Neotree reveal<cr>]]
     end,
   },
-  {
-    'lewis6991/gitsigns.nvim',
-    config = function()
-      require('gitsigns').setup {
-        signs = {
-          add = { hl = 'GitGutterAdd', text = '+' },
-          change = { hl = 'GitGutterChange', text = '~' },
-          delete = { hl = 'GitGutterDelete', text = '_' },
-          topdelete = { hl = 'GitGutterDelete', text = '‾' },
-          changedelete = { hl = 'GitGutterChange', text = '~' },
-        },
-        numhl = false,
-        linehl = false,
-        watch_gitdir = {
-          interval = 1000,
-        },
-        current_line_blame = true, -- Habilitar git blame en la línea actual
-        current_line_blame_opts = {
-          virt_text = true,
-          virt_text_pos = 'eol', -- Opciones: 'eol', 'overlay', 'right_align'
-          delay = 1000,
-        },
-        current_line_blame_formatter_opts = {
-          relative_time = false,
-        },
-        sign_priority = 6,
-        update_debounce = 100,
-        status_formatter = nil, -- Usa la configuración por defecto
-        max_file_length = 40000, -- Deshabilitar para archivos largos
-      }
-    end,
-  },
+  -- {
+  --   'lewis6991/gitsigns.nvim',
+  --   config = function()
+  --     require('gitsigns').setup {
+  --       signs = {
+  --         add = { hl = 'GitGutterAdd', text = '+' },
+  --         change = { hl = 'GitGutterChange', text = '~' },
+  --         delete = { hl = 'GitGutterDelete', text = '_' },
+  --         topdelete = { hl = 'GitGutterDelete', text = '‾' },
+  --         changedelete = { hl = 'GitGutterChange', text = '~' },
+  --       },
+  --       numhl = false,
+  --       linehl = false,
+  --       watch_gitdir = {
+  --         interval = 1000,
+  --       },
+  --       current_line_blame = true, -- Habilitar git blame en la línea actual
+  --       current_line_blame_opts = {
+  --         virt_text = true,
+  --         virt_text_pos = 'eol', -- Opciones: 'eol', 'overlay', 'right_align'
+  --         delay = 1000,
+  --       },
+  --       current_line_blame_formatter_opts = {
+  --         relative_time = false,
+  --       },
+  --       sign_priority = 6,
+  --       update_debounce = 100,
+  --       status_formatter = nil, -- Usa la configuración por defecto
+  --       max_file_length = 40000, -- Deshabilitar para archivos largos
+  --     }
+  --   end,
+  -- },
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
